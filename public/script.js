@@ -8,7 +8,6 @@ var peer = new Peer(undefined, {
 const container = document.getElementById("audio_grid");
 const canvas = document.getElementById("canvas");
 
-const ctx = canvas.getContext("2d");
 const user = prompt("Enter your name");
 const my_audio = document.createElement("audio");
 my_audio.muted = false
@@ -40,41 +39,12 @@ function connectToNewUser(userId, stream){
     })
 }
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let audioSource = null;
-let analyser = null;
 
 function addAudioStream(audio, stream){
     audio.srcObject = stream
            audio.addEventListener("loadedmetadata", () => {   
           audio.play();
-          audioSource = audioCtx.createMediaElementSource(audio);
-            analyser = audioCtx.createAnalyser();
-            audioSource.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            analyser.fftSize = 128;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            const barWidth = canvas.width / bufferLength;
-            let x = 0;
-
-            function animate() {
-                x = 0;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                analyser.getByteFrequencyData(dataArray);
-                for (let i = 0; i < bufferLength; i++) {
-                    barHeight = dataArray[i];
-                    ctx.fillStyle = "white";
-                    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                    x += barWidth;
-                }
-            
-                requestAnimationFrame(animate);
-            }
-            
-            animate();
-
-          });
+                  });
     }
 
 
